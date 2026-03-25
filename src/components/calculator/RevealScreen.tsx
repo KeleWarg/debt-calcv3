@@ -29,35 +29,32 @@ function generateAmortizationCurve(
 ): string {
   const pts: string[] = []
   const monthlyRate = apr / 100 / 12
-  const n = 80
 
   if (!reachable) {
+    const n = 60
     for (let i = 0; i <= n; i++) {
       const t = i / n
-      const month = t * maxMonths
-      const x = PAD.left + (month / maxMonths) * INNER_W
       const remaining = Math.max(0.82, 1 - t * 0.18)
+      const x = PAD.left + t * INNER_W
       const y = PAD.top + (1 - remaining) * INNER_H
       pts.push(`${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`)
     }
     return pts.join(' ')
   }
 
-  for (let i = 0; i <= n; i++) {
-    const month = (i / n) * actualMonths
-    const wholeMonths = Math.floor(month)
+  const balances: number[] = [principal]
+  let b = principal
+  for (let m = 0; m < actualMonths && b > 0; m++) {
+    const interest = b * monthlyRate
+    b -= Math.min(monthlyPayment - interest, b)
+    balances.push(Math.max(0, b))
+  }
 
-    let b = principal
-    for (let m = 0; m < wholeMonths && b > 0; m++) {
-      const interest = b * monthlyRate
-      b -= Math.min(monthlyPayment - interest, b)
-    }
-    const balance = Math.max(0, b)
-
-    const x = PAD.left + (month / maxMonths) * INNER_W
-    const remaining = balance / principal
+  for (let m = 0; m < balances.length; m++) {
+    const x = PAD.left + (m / maxMonths) * INNER_W
+    const remaining = balances[m] / principal
     const y = PAD.top + (1 - remaining) * INNER_H
-    pts.push(`${i === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`)
+    pts.push(`${m === 0 ? 'M' : 'L'} ${x.toFixed(1)} ${y.toFixed(1)}`)
   }
   return pts.join(' ')
 }
