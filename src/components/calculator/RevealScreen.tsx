@@ -10,7 +10,7 @@ import type { DebtFreeResult, ReliefResult } from '@/lib/calculator'
 
 const BLUE = '#0066CC'
 const NAVY = '#1B2A4A'
-const RED = '#EB4015'
+const GREEN = '#0C7663'
 const GREY = '#B0B0B0'
 
 const VB_W = 480
@@ -188,9 +188,9 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                   <stop offset="0%" stopColor={BLUE} stopOpacity="0.15" />
                   <stop offset="100%" stopColor={BLUE} stopOpacity="0.02" />
                 </linearGradient>
-                <linearGradient id={`${clipId}-red`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor={RED} stopOpacity="0.08" />
-                  <stop offset="100%" stopColor={RED} stopOpacity="0.01" />
+                <linearGradient id={`${clipId}-green`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={GREEN} stopOpacity="0.10" />
+                  <stop offset="100%" stopColor={GREEN} stopOpacity="0.02" />
                 </linearGradient>
               </defs>
 
@@ -210,7 +210,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
               {/* Area fills */}
               <path
                 d={generateAreaPath(currentD)}
-                fill={`url(#${clipId}-red)`}
+                fill={`url(#${clipId}-green)`}
                 className="transition-opacity duration-300"
                 style={{ opacity: stage >= 2 ? 1 : 0 }}
               />
@@ -223,7 +223,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
 
               {/* Lines revealed left-to-right */}
               <g clipPath={`url(#${clipId})`}>
-                <path d={currentD} fill="none" stroke={RED} strokeWidth="2.5" strokeDasharray="6 4" />
+                <path d={currentD} fill="none" stroke={GREEN} strokeWidth="3" />
                 <path d={reliefD} fill="none" stroke={BLUE} strokeWidth="3" />
 
                 {/* Start dot */}
@@ -244,7 +244,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                   cx={currentEndX}
                   cy={bottomY}
                   r="4"
-                  fill={RED}
+                  fill={GREEN}
                   className="transition-opacity duration-500"
                   style={{ opacity: stage >= 2 ? 1 : 0 }}
                 />
@@ -304,7 +304,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                   textAnchor="middle"
                   fontSize="11"
                   fontWeight="700"
-                  fill={RED}
+                  fill={GREEN}
                   className="transition-opacity duration-500"
                   style={{ opacity: stage >= 2 ? 1 : 0 }}
                 >
@@ -317,7 +317,7 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
               <text x={PAD.left + 22} y={PAD.top - 13} fontSize="9" fill={NAVY} fontWeight="500">
                 With relief program
               </text>
-              <line x1={PAD.left + 150} y1={PAD.top - 16} x2={PAD.left + 168} y2={PAD.top - 16} stroke={RED} strokeWidth="2" strokeDasharray="4 3" />
+              <line x1={PAD.left + 150} y1={PAD.top - 16} x2={PAD.left + 168} y2={PAD.top - 16} stroke={GREEN} strokeWidth="3" />
               <text x={PAD.left + 172} y={PAD.top - 13} fontSize="9" fill={GREY}>
                 Minimum payments
               </text>
