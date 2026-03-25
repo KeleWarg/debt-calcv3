@@ -23,6 +23,7 @@ function generateAmortizationCurve(
   principal: number,
   apr: number,
   monthlyPayment: number,
+  actualMonths: number,
   maxMonths: number,
   reachable: boolean
 ): string {
@@ -42,13 +43,8 @@ function generateAmortizationCurve(
     return pts.join(' ')
   }
 
-  let balance = principal
-  const totalMonths = reachable
-    ? Math.ceil(principal / (monthlyPayment - principal * monthlyRate) * 1.5)
-    : maxMonths
-
   for (let i = 0; i <= n; i++) {
-    const month = (i / n) * totalMonths
+    const month = (i / n) * actualMonths
     const wholeMonths = Math.floor(month)
 
     let b = principal
@@ -56,7 +52,7 @@ function generateAmortizationCurve(
       const interest = b * monthlyRate
       b -= Math.min(monthlyPayment - interest, b)
     }
-    balance = Math.max(0, b)
+    const balance = Math.max(0, b)
 
     const x = PAD.left + (month / maxMonths) * INNER_W
     const remaining = balance / principal
@@ -114,9 +110,10 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
   }, [])
 
   const cappedCurrentMonths = currentPath.reachable ? currentPath.months : 420
-  const monthsSaved = currentPath.reachable
-    ? Math.max(0, currentPath.months - reliefPath.months)
-    : cappedCurrentMonths - reliefPath.months
+  const reliefIsFaster = reliefPath.months < cappedCurrentMonths
+  const monthsSaved = reliefIsFaster
+    ? cappedCurrentMonths - reliefPath.months
+    : 0
   const yearsSaved = Math.floor(monthsSaved / 12)
   const timeSavedLabel = monthsSaved >= 12
     ? `${yearsSaved} ${yearsSaved === 1 ? 'year' : 'yrs'}`
@@ -124,26 +121,30 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
   const totalSavings = currentPath.reachable
     ? currentPath.totalPaid - reliefPath.totalCost
     : debtAmount - reliefPath.totalCost
-  const currentYear = currentPath.reachable ? currentPath.year : new Date().getFullYear() + Math.ceil(cappedCurrentMonths / 12)
-  const maxMonths = cappedCurrentMonths
-
-  const currentD = generateAmortizationCurve(debtAmount, interestRate, monthlyPayment, maxMonths, currentPath.reachable)
-  const reliefD = generateReliefCurve(debtAmount, reliefPath.months, maxMonths)
-
-  const reliefEndX = PAD.left + (reliefPath.months / maxMonths) * INNER_W
-  const currentEndX = PAD.left + INNER_W
-  const bottomY = PAD.top + INNER_H
 
   const nowYear = new Date().getFullYear()
-  const totalYearSpan = currentYear - nowYear
-  const yearStep = totalYearSpan <= 8 ? 2 : totalYearSpan <= 15 ? 3 : 5
+  const longestMonths = Math.max(cappedCurrentMonths, reliefPath.months)
+  const maxMonths = longestMonths
+  const endYear = nowYear + Math.ceil(longestMonths / 12)
+  const currentEndMonth = cappedCurrentMonths
+  const reliefEndMonth = reliefPath.months
+
+  const currentD = generateAmortizationCurve(debtAmount, interestRate, monthlyPayment, cappedCurrentMonths, maxMonths, currentPath.reachable)
+  const reliefD = generateReliefCurve(debtAmount, reliefPath.months, maxMonths)
+
+  const reliefEndX = PAD.left + (reliefEndMonth / maxMonths) * INNER_W
+  const currentEndX = PAD.left + (currentEndMonth / maxMonths) * INNER_W
+  const bottomY = PAD.top + INNER_H
+
+  const totalYearSpan = Math.max(1, endYear - nowYear)
+  const yearStep = totalYearSpan <= 4 ? 1 : totalYearSpan <= 8 ? 2 : totalYearSpan <= 15 ? 3 : 5
   const xTicks: { year: number; x: number }[] = []
-  for (let y = nowYear; y <= currentYear; y += yearStep) {
-    const t = (y - nowYear) / (currentYear - nowYear)
+  for (let y = nowYear; y <= endYear; y += yearStep) {
+    const t = (y - nowYear) / totalYearSpan
     xTicks.push({ year: y, x: PAD.left + t * INNER_W })
   }
-  if (xTicks[xTicks.length - 1]?.year !== currentYear) {
-    xTicks.push({ year: currentYear, x: PAD.left + INNER_W })
+  if (xTicks[xTicks.length - 1]?.year !== endYear) {
+    xTicks.push({ year: endYear, x: PAD.left + INNER_W })
   }
 
   const revealWidth = stage >= 1 ? INNER_W + PAD.right : 0
@@ -295,6 +296,22 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
                 {reliefPath.year}
               </text>
 
+              {/* Endpoint year annotations — current path */}
+              {currentPath.reachable && (
+                <text
+                  x={currentEndX}
+                  y={bottomY + 32}
+                  textAnchor="middle"
+                  fontSize="11"
+                  fontWeight="700"
+                  fill={RED}
+                  className="transition-opacity duration-500"
+                  style={{ opacity: stage >= 2 ? 1 : 0 }}
+                >
+                  {currentPath.year}
+                </text>
+              )}
+
               {/* Legend */}
               <line x1={PAD.left} y1={PAD.top - 16} x2={PAD.left + 18} y2={PAD.top - 16} stroke={BLUE} strokeWidth="3" />
               <text x={PAD.left + 22} y={PAD.top - 13} fontSize="9" fill={NAVY} fontWeight="500">
@@ -320,8 +337,12 @@ export function RevealScreen({ debtAmount, interestRate, monthlyPayment, current
             <p style={{ fontSize: '11px', color: '#999999', marginTop: '2px' }}>Could save</p>
           </div>
           <div className="border border-neutral-200 rounded-xl p-4 text-center">
-            <p style={{ fontSize: '22px', fontWeight: 700, color: BLUE }}>{currentPath.reachable ? timeSavedLabel : '30+ yrs'}</p>
-            <p style={{ fontSize: '11px', color: '#999999', marginTop: '2px' }}>Faster payoff</p>
+            <p style={{ fontSize: '22px', fontWeight: 700, color: BLUE }}>
+              {!currentPath.reachable ? '30+ yrs' : reliefIsFaster ? timeSavedLabel : `${reliefPath.months} mo`}
+            </p>
+            <p style={{ fontSize: '11px', color: '#999999', marginTop: '2px' }}>
+              {reliefIsFaster || !currentPath.reachable ? 'Faster payoff' : 'Program length'}
+            </p>
           </div>
           <div className="border border-neutral-200 rounded-xl p-4 text-center">
             <p style={{ fontSize: '22px', fontWeight: 700, color: BLUE }}>{reliefPath.year}</p>
