@@ -321,7 +321,10 @@ export function CalcCombined({
                     className="animate-fade-in-up text-body text-neutral-500 mb-10"
                     style={{ animationDelay: '400ms' }}
                   >
-                    It might be sooner than you expect.
+                    The average American with $15,000 in credit card debt could be debt-free by{' '}
+                    <span className="font-bold text-feedback-success">2028</span> with the right
+                    program instead of{' '}
+                    <span className="font-bold text-feedback-error">2049</span> on minimum payments.
                   </p>
 
                   <div className="w-full max-w-[480px]">
@@ -350,22 +353,6 @@ export function CalcCombined({
                       <div className="w-full flex justify-between mt-2 text-caption text-neutral-500">
                         <span>$50</span>
                         <span>$2,000</span>
-                      </div>
-                    </div>
-
-                    {/* Example box — mobile only */}
-                    <div
-                      className="animate-fade-in-up w-full bg-neutral-50 rounded-lg text-left mb-8 lg:hidden"
-                      style={{ animationDelay: '650ms', padding: '20px' }}
-                    >
-                      <div className="flex items-start gap-3">
-                        <Image src="/clock-icon.png" alt="Clock" width={64} height={64} unoptimized className="flex-shrink-0 animate-float" />
-                        <p className="text-body-sm text-neutral-800" style={{ lineHeight: '1.6' }}>
-                          The average American with $15,000 in credit card debt could be debt-free by{' '}
-                          <span className="font-bold text-feedback-success">2028</span> with the right
-                          program instead of{' '}
-                          <span className="font-bold text-feedback-error">2049</span> on minimum payments.
-                        </p>
                       </div>
                     </div>
 
