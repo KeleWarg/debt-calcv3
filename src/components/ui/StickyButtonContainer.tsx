@@ -84,7 +84,7 @@ export function StickyButtonContainer({
   const fixedBar = (
     <div
       className={cn(
-        'fixed left-0 right-0 bottom-0 bg-white border-t border-neutral-200 px-4 pt-4 pb-6 z-[9999] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]',
+        'fixed left-0 right-0 bottom-0 bg-white border-t border-neutral-200 px-4 pt-3 pb-4 z-[9999] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]',
         'transition-[bottom] duration-150 ease-out',
       )}
       style={{ bottom: keyboardOffset > 0 ? `${keyboardOffset}px` : 0 }}

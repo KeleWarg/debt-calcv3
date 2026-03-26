@@ -359,7 +359,7 @@ export function CalcCombined({
                       <Button fullWidth showTrailingIcon onClick={handleCalculate}>
                         Show My Debt-Free Date
                       </Button>
-                      <div className="flex items-center justify-center gap-2 mt-3 sm:hidden">
+                      <div className="flex items-center justify-center gap-2 mt-2 sm:hidden">
                         <Image src="/icon-shield.png" alt="Shield" width={28} height={28} unoptimized />
                         <p className="text-sm text-neutral-500">See your timeline for free. Takes 10 seconds</p>
                       </div>
@@ -443,7 +443,7 @@ export function CalcCombined({
                       <Button fullWidth showTrailingIcon onClick={onContinue}>
                         See If You Qualify
                       </Button>
-                      <div className="flex items-center justify-center gap-2 mt-3 sm:hidden">
+                      <div className="flex items-center justify-center gap-2 mt-2 sm:hidden">
                         <Image src="/icon-shield.png" alt="Shield" width={20} height={20} unoptimized />
                         <span className="text-caption text-neutral-500">Your information is secure and never shared</span>
                       </div>
