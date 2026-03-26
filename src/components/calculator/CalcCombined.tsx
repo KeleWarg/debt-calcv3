@@ -270,7 +270,7 @@ export function CalcCombined({
       <Header />
 
       <main className="flex-1 flex items-center">
-        <div className="w-full px-4 sm:pl-[80px] sm:pr-[80px] pt-6 sm:pt-10 pb-4 sm:pb-8">
+        <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-[80px] pt-6 sm:pt-10 pb-4 sm:pb-8">
           <div className="flex flex-col lg:flex-row lg:items-center lg:gap-12 has-sticky-button">
             {/* Left column: Lottie + example box (stays fixed across modes) */}
             <div className="hidden lg:flex lg:flex-col lg:items-start lg:justify-center lg:w-[380px] lg:flex-shrink-0 lg:self-center">
