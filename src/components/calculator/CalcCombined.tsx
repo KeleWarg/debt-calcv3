@@ -306,7 +306,7 @@ export function CalcCombined({
                   </p>
 
                   <h1
-                    className="animate-fade-in-up font-display text-display sm:text-display-md lg:text-display-lg mb-3 text-neutral-800"
+                    className="animate-fade-in-up font-display text-display-md sm:text-display-md lg:text-display-lg mb-3 text-neutral-800"
                     style={{ animationDelay: '300ms' }}
                   >
                     What year will you
@@ -350,13 +350,33 @@ export function CalcCombined({
                       </div>
                     </div>
 
+                    {/* Example box — mobile only */}
+                    <div
+                      className="animate-fade-in-up w-full bg-neutral-50 rounded-lg text-left mb-8 lg:hidden"
+                      style={{ animationDelay: '650ms', padding: '20px' }}
+                    >
+                      <div className="flex items-start gap-3">
+                        <Image src="/clock-icon.png" alt="Clock" width={64} height={64} unoptimized className="flex-shrink-0 animate-float" />
+                        <p className="text-body-sm text-neutral-800" style={{ lineHeight: '1.6' }}>
+                          The average American with $15,000 in credit card debt could be debt-free by{' '}
+                          <span className="font-bold text-feedback-success">2028</span> with the right
+                          program instead of{' '}
+                          <span className="font-bold text-feedback-error">2049</span> on minimum payments.
+                        </p>
+                      </div>
+                    </div>
+
                     <StickyButtonContainer>
                       <Button fullWidth showTrailingIcon onClick={handleCalculate}>
                         Show My Debt-Free Date
                       </Button>
+                      <div className="flex items-center gap-2 mt-3 sm:hidden">
+                        <Image src="/icon-shield.png" alt="Shield" width={28} height={28} unoptimized />
+                        <p className="text-sm text-neutral-500">See your timeline for free. Takes 10 seconds</p>
+                      </div>
                     </StickyButtonContainer>
 
-                    <div className="animate-fade-in-up w-full mt-3" style={{ animationDelay: '800ms' }}>
+                    <div className="animate-fade-in-up w-full mt-3 hidden sm:block" style={{ animationDelay: '800ms' }}>
                       <div className="flex items-center gap-2">
                         <Image src="/icon-shield.png" alt="Shield" width={28} height={28} unoptimized />
                         <p className="text-sm text-neutral-500">See your timeline for free. Takes 10 seconds</p>
