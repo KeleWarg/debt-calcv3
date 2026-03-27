@@ -76,20 +76,30 @@ export default function CalculatorPage() {
   const renderStep = () => {
     switch (step) {
       case 'pii':
-        return (
-          <CalcPII
-            debtAmount={data.debtAmount}
-            potentialSavings={
-              currentResult?.reachable
-                ? (currentResult.totalPaid - (reliefResult?.totalCost ?? 0))
-                : (data.debtAmount - (reliefResult?.totalCost ?? 0))
-            }
-            onSubmit={(pii) => {
-              update(pii)
-              alert('Lead submitted! (API integration pending)')
-            }}
-          />
-        )
+        {
+          const cappedMonths = currentResult?.reachable ? currentResult.months : 420
+          const reliefMonths = reliefResult?.months ?? 0
+          const monthsSaved = Math.max(0, cappedMonths - reliefMonths)
+          const yearsSaved = monthsSaved >= 12
+            ? `${Math.floor(monthsSaved / 12)} ${Math.floor(monthsSaved / 12) === 1 ? 'year' : 'yrs'}`
+            : `${monthsSaved} mo`
+
+          return (
+            <CalcPII
+              debtAmount={data.debtAmount}
+              potentialSavings={
+                currentResult?.reachable
+                  ? (currentResult.totalPaid - (reliefResult?.totalCost ?? 0))
+                  : (data.debtAmount - (reliefResult?.totalCost ?? 0))
+              }
+              yearsSaved={yearsSaved}
+              onSubmit={(pii) => {
+                update(pii)
+                alert('Lead submitted! (API integration pending)')
+              }}
+            />
+          )
+        }
       default:
         return null
     }

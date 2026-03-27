@@ -27,8 +27,8 @@ const schnyderS = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Find a Financial Advisor - Forbes Advisor',
-  description: 'Get matched with a vetted fiduciary financial advisor. Free consultation, no obligation. Personalized to your goals.',
+  title: 'Debt Relief Calculator - Forbes Advisor',
+  description: 'See how fast you could be debt-free. Compare your current payments to a relief program and find out how much you could save.',
 }
 
 export default function RootLayout({
